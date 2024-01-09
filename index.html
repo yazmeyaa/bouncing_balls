@@ -1,13 +1,66 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Bouncing balls</title>
-  </head>
-  <body style="margin: 0px; padding: 0px;display: block;">
-    <canvas style="box-sizing: border-box;" id="canvas"></canvas>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bouncing balls</title>
+</head>
+
+<body style="margin: 0px; padding: 0px;display: block;">
+  <button id="reset_button">Reset</button>
+  <div id="balls_counter_container">
+    <span>Spawned balls</span>
+    <strong id="balls_counter">0</strong>
+  </div>
+  <canvas style="box-sizing: border-box;" id="canvas"></canvas>
+  <style>
+    body {
+      position: relative;
+    }
+
+    #balls_counter_container {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      transform: translate(20%, 20%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+
+      background-color: #00000040;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 1.25rem;
+    }
+
+    #reset_button {
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      transform: translate(-20%, 20%);
+
+      padding: 0.5rem 1rem;
+      background-color: #ffee07;
+      border: 2px solid black;
+      border-radius: 0.5rem;
+      font-weight: bold;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: background-color 0.18s cubic-bezier(0.075, 0.82, 0.165, 1);
+    }
+
+    #reset_button:hover {
+      background-color: #ffbf00;
+    }
+
+    #reset_button:active {
+      background-color: #ffd900;
+    }
+  </style>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+
 </html>

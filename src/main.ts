@@ -6,6 +6,19 @@ canvas.height = window.innerHeight - 5;
 canvas.style.width = `${canvas.width - 5}px`;
 canvas.style.height = `${canvas.height - 5}px`
 
+const ballsCounterElement = document.getElementById('balls_counter') as HTMLSpanElement;
+const resetButtonElement = document.getElementById('reset_button') as HTMLButtonElement;
+
+let ballsCounter = 0;
+ballsCounterElement.innerText = '0';
+
+resetButtonElement.addEventListener('click', () => {
+  app.entities.flushEntities();
+  ballsCounter = 0;
+  addArenaToApp();
+  addBallToApp();
+})
+
 const GRAVITY_FORCE = new Vector2D({ x: 0, y: 0 }, { y: 9.8, x: 0 })
 
 class Timer {
@@ -63,6 +76,12 @@ class EntityList {
     if (this.list.has(entity.id) === false) return;
     this.list.delete(entity.id);
   }
+
+  public flushEntities(): void {
+    this.getList().forEach(item => {
+      this.removeEntity(item);
+    })
+  }
 }
 
 class EntityPosition {
@@ -89,7 +108,7 @@ type OnArenaCollide = (thisBall: Ball, arena: Arena) => void
 
 class Ball extends Entity {
   public position: EntityPosition = new EntityPosition();
-  public radius: number = 12;
+  public radius: number = arena.radius * 0.04;
   public speed = new Vector2D();
   private energyLossCoefficient = 0.90;
   private color = ballColors[Math.floor(Math.random() * ballColors.length)];
@@ -241,7 +260,7 @@ class Application {
 }
 
 class Arena extends Entity {
-  public readonly radius = (canvas.height / 2) * 0.8;
+  public readonly radius = (Math.min(canvas.height, canvas.width) / 2) * 0.8;
   public readonly position: EntityPosition = {
     x: canvas.width / 2,
     y: canvas.height / 2
@@ -268,7 +287,7 @@ function addBallToApp(): void {
   const angle = Math.random() * 2 * Math.PI;
 
   const ball = new Ball({
-    initialPosition:  {
+    initialPosition: {
       x: canvas.width / 2 + radius * Math.cos(angle),
       y: canvas.height / 2 + radius * Math.sin(angle),
     },
@@ -287,10 +306,26 @@ function addBallToApp(): void {
   ball.speed.b.setY(Math.random() >= 0.5 ? speedY : -speedY);
 
   app.entities.addEntity(ball)
+
+  incrementBallsCounter();
 }
 
-addBallToApp();
+function renderCounter() {
+  ballsCounterElement.innerText = ballsCounter.toString();
+}
+
+function incrementBallsCounter() {
+  ballsCounter += 1;
+  renderCounter();
+}
+
+function addArenaToApp(): void {
+  const arena = new Arena();
+  app.entities.addEntity(arena)
+}
 
 const arena = new Arena();
 app.entities.addEntity(arena)
+addBallToApp();
+
 app.play();
