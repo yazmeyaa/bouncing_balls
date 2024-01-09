@@ -13,9 +13,8 @@ let ballsCounter = 0;
 ballsCounterElement.innerText = '0';
 
 resetButtonElement.addEventListener('click', () => {
-  app.entities.flushEntities();
+  app.removeAllBalls();
   ballsCounter = 0;
-  addArenaToApp();
   addBallToApp();
 })
 
@@ -209,6 +208,12 @@ class Application {
     this.entities = new EntityList(entities)
   }
 
+  public removeAllBalls() {
+    this.entities.getList().forEach(item => {
+      if (item instanceof Ball) this.entities.removeEntity(item)
+    })
+  }
+
   private applyActionForEveryEntity(action: (entity: Entity) => void) {
     for (const entity of this.entities.getList()) {
       action(entity)
@@ -317,11 +322,6 @@ function renderCounter() {
 function incrementBallsCounter() {
   ballsCounter += 1;
   renderCounter();
-}
-
-function addArenaToApp(): void {
-  const arena = new Arena();
-  app.entities.addEntity(arena)
 }
 
 const arena = new Arena();
