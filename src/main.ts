@@ -1,3 +1,4 @@
+import { Sounds } from "./sounds";
 import { Vector2D } from "./vector";
 
 const canvas = document.getElementById('canvas') as HTMLCanvasElement;
@@ -8,6 +9,7 @@ canvas.style.height = `${canvas.height - 5}px`
 
 const ballsCounterElement = document.getElementById('balls_counter') as HTMLSpanElement;
 const resetButtonElement = document.getElementById('reset_button') as HTMLButtonElement;
+const enableSoundsButton = document.getElementById('enable_sounds_button') as HTMLButtonElement;
 
 let ballsCounter = 0;
 ballsCounterElement.innerText = '0';
@@ -16,6 +18,16 @@ resetButtonElement.addEventListener('click', () => {
   app.removeAllBalls();
   ballsCounter = 0;
   addBallToApp();
+})
+
+enableSoundsButton.addEventListener('click', () => {
+  if (!app.sound.soundsEnabled) {
+    app.sound.enableSounds();
+    enableSoundsButton.innerText = 'Mute'
+  } else {
+    app.sound.disableSounds();
+    enableSoundsButton.innerText = 'Enable sounds'
+  }
 })
 
 const GRAVITY_FORCE = new Vector2D({ x: 0, y: 0 }, { y: 9.8, x: 0 })
@@ -109,7 +121,7 @@ class Ball extends Entity {
   public position: EntityPosition = new EntityPosition();
   public radius: number = arena.radius * 0.04;
   public speed = new Vector2D();
-  private energyLossCoefficient = 0.90;
+  private energyLossCoefficient = 1;
   private color = ballColors[Math.floor(Math.random() * ballColors.length)];
   public onBallCollideOtherBall: OnBallCollide | null = null;
   public onCollideWithArena: OnArenaCollide | null = null;
@@ -200,6 +212,7 @@ class Application {
   public timer = new Timer();
   private ctx: CanvasRenderingContext2D;
   public entities: EntityList;
+  public sound = new Sounds();
 
   constructor(canvas: HTMLCanvasElement, entities?: Entity[]) {
     const ctx = canvas.getContext('2d');
@@ -298,6 +311,7 @@ function addBallToApp(): void {
     },
     onArenaCollide: () => {
       addBallToApp();
+      app.sound.beep();
     },
     onBallCollide: (a, b) => {
       app.entities.removeEntity(a);
